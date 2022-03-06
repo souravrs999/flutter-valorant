@@ -4,6 +4,7 @@ import 'package:test_app/screens/onboarding.dart';
 import 'package:test_app/utils/constants.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -13,12 +14,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
+        statusBarColor: cSecondaryColor,
         statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.dark));
+        statusBarBrightness: Brightness.dark,
+        systemNavigationBarColor: cSecondaryColor));
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      color: cSecondaryColor,
+      themeMode: ThemeMode.system,
       title: 'Flutter Demo',
       theme: ThemeData(
           colorScheme: ColorScheme.fromSwatch()

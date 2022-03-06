@@ -18,6 +18,7 @@ class _LandingScreenState extends State<LandingScreen> {
           backgroundColor: cSecondaryColor,
           appBar: AppBar(
             automaticallyImplyLeading: false,
+            centerTitle: true,
             backgroundColor: cSecondaryColor,
             elevation: 0,
             toolbarHeight: 120,
