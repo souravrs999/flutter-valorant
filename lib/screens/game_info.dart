@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:test_app/models/maps.dart';
 import 'package:test_app/models/agents.dart';
@@ -17,12 +18,12 @@ class GameInfo extends StatefulWidget {
 
 class _GameInfoState extends State<GameInfo> {
   late Future<Agents> _agentsData;
-  late Future<Events> _eventsData;
   late Future<Maps> _MapsData;
 
   Future<Agents> _fetchAgentsData() async {
     var res = await http.get(Uri.parse(
         'https://valorant-api.com/v1/agents?isPlayableCharacter=true'));
+    print('called agent');
     if (res.statusCode == 200) {
       return Agents.fromJson(json.decode(res.body));
     } else {
@@ -30,17 +31,9 @@ class _GameInfoState extends State<GameInfo> {
     }
   }
 
-  Future<Events> _fetchEventsData() async {
-    var res = await http.get(Uri.parse('https://valorant-api.com/v1/events'));
-    if (res.statusCode == 200) {
-      return Events.fromJson(json.decode(res.body));
-    } else {
-      throw Exception('Error');
-    }
-  }
-
   Future<Maps> _fetchMapsData() async {
     var res = await http.get(Uri.parse('https://valorant-api.com/v1/maps'));
+    print('called maps');
     if (res.statusCode == 200) {
       return Maps.fromJson(json.decode(res.body));
     } else {
@@ -50,9 +43,9 @@ class _GameInfoState extends State<GameInfo> {
 
   @override
   void initState() {
-    super.initState();
     _agentsData = _fetchAgentsData();
     _MapsData = _fetchMapsData();
+    super.initState();
     // _eventsData = _fetchEventsData();
   }
 
@@ -85,21 +78,41 @@ class _GameInfoState extends State<GameInfo> {
                                     color: cPrimaryColor),
                                 child: Stack(fit: StackFit.expand, children: [
                                   snapshot.data!.data[index].background != null
-                                      ? Image.network(
-                                          '${snapshot.data!.data[index].background}',
+                                      ? CachedNetworkImage(
+                                          fit: BoxFit.cover,
+                                          imageUrl:
+                                              '${snapshot.data!.data[index].background}',
+                                          placeholder: (context, url) =>
+                                              Opacity(
+                                                  opacity: 0.2,
+                                                  child: Image.asset(
+                                                    'assets/images/valorant_logo.png',
+                                                    color: cSecondaryColor,
+                                                  )),
                                           color: cSecondaryColor,
                                         )
                                       : Image.asset(
                                           'assets/images/valorant_logo.png',
                                           color: cSecondaryColor,
                                         ),
-                                  Image.network(
-                                    snapshot.data!.data[index].fullPortrait !=
-                                            null
-                                        ? '${snapshot.data!.data[index].fullPortrait}'
-                                        : 'https://via.placeholder.com/150',
-                                    fit: BoxFit.cover,
-                                  ),
+                                  snapshot.data!.data[index].fullPortrait !=
+                                          null
+                                      ? CachedNetworkImage(
+                                          fit: BoxFit.cover,
+                                          imageUrl:
+                                              '${snapshot.data!.data[index].fullPortrait}',
+                                          placeholder: (context, url) =>
+                                              Opacity(
+                                                  opacity: 0.4,
+                                                  child: Image.asset(
+                                                    'assets/images/agent-placeholder.png',
+                                                    color: cSecondaryColor,
+                                                  )),
+                                        )
+                                      : Image.asset(
+                                          'assets/images/agent-placeholder.png',
+                                          color: cSecondaryColor,
+                                        ),
                                   Positioned.fill(
                                       bottom: 25,
                                       child: Align(
