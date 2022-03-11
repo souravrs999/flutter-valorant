@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:test_app/screens/game_info.dart';
-import 'package:test_app/utils/constants.dart';
+import 'package:Valorant/screens/game_info.dart';
+import 'package:Valorant/utils/constants.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({Key? key}) : super(key: key);

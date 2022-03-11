@@ -1,10 +1,23 @@
+import 'dart:io';
+
+import 'package:path/path.dart';
+import 'package:sembast/sembast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:test_app/screens/onboarding.dart';
-import 'package:test_app/utils/constants.dart';
+import 'package:sembast/sembast_io.dart';
+import 'package:path_provider/path_provider.dart';
 
-void main() {
+import 'package:Valorant/screens/onboarding.dart';
+import 'package:Valorant/utils/constants.dart';
+
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final Directory dir = await getApplicationDocumentsDirectory();
+  await dir.create(recursive: true);
+  final String dbPath = join(dir.path, 'data.db');
+  final Database db = await databaseFactoryIo.openDatabase(dbPath);
+
   runApp(const MyApp());
 }
 

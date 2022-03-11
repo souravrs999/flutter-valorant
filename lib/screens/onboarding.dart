@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:test_app/screens/landing_screen.dart';
-import 'package:test_app/utils/constants.dart';
+import 'package:Valorant/screens/landing_screen.dart';
+import 'package:Valorant/utils/constants.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({Key? key}) : super(key: key);

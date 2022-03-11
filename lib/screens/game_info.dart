@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:Valorant/components/agent_card.dart';
+import 'package:Valorant/components/map_card.dart';
 
-import 'package:test_app/models/maps.dart';
-import 'package:test_app/models/agents.dart';
-import 'package:test_app/models/events.dart';
+import 'package:Valorant/models/maps.dart';
+import 'package:Valorant/models/agents.dart';
 
-import 'package:test_app/utils/constants.dart';
+import 'package:Valorant/utils/constants.dart';
 
 class GameInfo extends StatefulWidget {
   const GameInfo({Key? key}) : super(key: key);
@@ -64,87 +64,20 @@ class _GameInfoState extends State<GameInfo> {
               future: _agentsData,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
+                  final agent = snapshot.data!.data;
                   return SizedBox(
                     height: MediaQuery.of(context).size.height * 0.45,
                     child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: snapshot.data!.data.length,
                         itemBuilder: (context, index) => Padding(
-                              padding: const EdgeInsets.only(left: 25),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.70,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: cPrimaryColor),
-                                child: Stack(fit: StackFit.expand, children: [
-                                  snapshot.data!.data[index].background != null
-                                      ? CachedNetworkImage(
-                                          fit: BoxFit.cover,
-                                          imageUrl:
-                                              '${snapshot.data!.data[index].background}',
-                                          placeholder: (context, url) =>
-                                              Opacity(
-                                                  opacity: 0.2,
-                                                  child: Image.asset(
-                                                    'assets/images/valorant_logo.png',
-                                                    color: cSecondaryColor,
-                                                  )),
-                                          color: cSecondaryColor,
-                                        )
-                                      : Image.asset(
-                                          'assets/images/valorant_logo.png',
-                                          color: cSecondaryColor,
-                                        ),
-                                  snapshot.data!.data[index].fullPortrait !=
-                                          null
-                                      ? CachedNetworkImage(
-                                          fit: BoxFit.cover,
-                                          imageUrl:
-                                              '${snapshot.data!.data[index].fullPortrait}',
-                                          placeholder: (context, url) =>
-                                              Opacity(
-                                                  opacity: 0.4,
-                                                  child: Image.asset(
-                                                    'assets/images/agent-placeholder.png',
-                                                    color: cSecondaryColor,
-                                                  )),
-                                        )
-                                      : Image.asset(
-                                          'assets/images/agent-placeholder.png',
-                                          color: cSecondaryColor,
-                                        ),
-                                  Positioned.fill(
-                                      bottom: 25,
-                                      child: Align(
-                                        alignment: Alignment.bottomCenter,
-                                        child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              Text(
-                                                  snapshot.data!.data[index]
-                                                      .displayName
-                                                      .toUpperCase(),
-                                                  style: const TextStyle(
-                                                      fontSize: 30,
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.w900)),
-                                              Text(
-                                                snapshot.data!.data[index].role!
-                                                    .displayName
-                                                    .toUpperCase(),
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              )
-                                            ]),
-                                      ))
-                                ]),
-                              ),
-                            )),
+                            padding: const EdgeInsets.only(left: 25),
+                            child: AgentCard(
+                              agentBackground: agent[index].background,
+                              agentPortrait: agent[index].fullPortrait,
+                              agentName: agent[index].displayName,
+                              agentRole: agent[index].role!.displayName,
+                            ))),
                   );
                 } else {
                   return const Center(
@@ -158,7 +91,7 @@ class _GameInfoState extends State<GameInfo> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: const [
                 Text(
-                  'MEDIA',
+                  'MAPS',
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -178,60 +111,19 @@ class _GameInfoState extends State<GameInfo> {
               future: _MapsData,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
+                  final maps = snapshot.data!.data;
                   return Expanded(
                       flex: 1,
                       child: ListView.builder(
                           scrollDirection: Axis.vertical,
                           itemCount: snapshot.data!.data.length,
                           itemBuilder: (_, index) => Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 25, vertical: 15),
-                                child: SizedBox(
-                                  child: Row(children: [
-                                    ClipRRect(
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: SizedBox(
-                                            height: 100,
-                                            width: 100,
-                                            // ignore: unnecessary_null_comparison
-                                            child: Image.network(
-                                              snapshot.data!.data[index].splash,
-                                              width: 80,
-                                              fit: BoxFit.cover,
-                                            ))),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          25, 0, 0, 0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            snapshot
-                                                .data!.data[index].displayName,
-                                            style: const TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          const SizedBox(
-                                            height: 12,
-                                          ),
-                                          Text(
-                                            snapshot
-                                                .data!.data[index].coordinates,
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'Valorant',
-                                              fontSize: 14,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ]),
-                                ),
-                              )));
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 25, vertical: 15),
+                              child: MapCard(
+                                  mapImage: maps[index].splash,
+                                  mapName: maps[index].displayName,
+                                  mapCoords: maps[index].coordinates))));
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),
